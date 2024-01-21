@@ -1,21 +1,25 @@
 package objects
 
 import (
-	_ "image/png"
 	"log"
+	"math"
 
+	"github.com/ferhatyegin/goAsteroids/utils"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type Player struct {
-	img     *ebiten.Image
-	h       int
-	w       int
-	x       int
-	y       int
-	offsetX float64
-	offsetY float64
+	img           *ebiten.Image
+	h             int
+	w             int
+	x             float64
+	y             float64
+	dx            float64
+	dy            float64
+	offsetX       float64
+	offsetY       float64
+	rotationAngle float64
 }
 
 func NewPlayer() Object {
@@ -25,35 +29,50 @@ func NewPlayer() Object {
 		log.Fatal(err)
 	}
 
-	w, h := img.Size()
+	w := img.Bounds().Dx()
+	h := img.Bounds().Dy()
 
 	return &Player{
 		img:     img,
 		w:       w,
 		h:       h,
-		x:       320 - 32,
-		y:       320 - 32,
-		offsetX: float64(w),
-		offsetY: float64(h),
+		x:       320,
+		y:       320,
+		offsetX: float64(w) / 2,
+		offsetY: float64(h) / 2,
 	}
 }
 
-func (p *Player) Update(_ *ebiten.Image) {
+func (p *Player) Update() error {
 
+	utils.WrapCoordinates(p.x, p.y, &p.x, &p.y)
+
+	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+		p.rotationAngle -= 0.07
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+		p.rotationAngle += 0.07
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
+		p.dx += math.Sin(p.rotationAngle) * 0.2
+		p.dy += -math.Cos(p.rotationAngle) * 0.2
+	}
+
+	p.x += p.dx
+	p.y += p.dy
+
+	return nil
 }
 
 func (p *Player) Draw(target *ebiten.Image) error {
 	op := &ebiten.DrawImageOptions{}
 
+	op.GeoM.Reset()
+	op.GeoM.Translate(-float64(p.offsetX), -float64(p.offsetY))
+	op.GeoM.Rotate(p.rotationAngle)
 	op.GeoM.Translate(float64(p.x), float64(p.y))
 
-	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
-		p.x -= 5
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
-		p.x += 5
-	}
-
+	utils.DrawWrapped(target, p.img, p.x, p.y, p.rotationAngle)
 	target.DrawImage(p.img, op)
 	return nil
 }

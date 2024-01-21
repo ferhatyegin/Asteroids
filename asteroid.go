@@ -1,6 +1,7 @@
 package asteroid
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/ferhatyegin/goAsteroids/objects"
@@ -18,11 +19,16 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
+	for _, o := range g.objects {
+		if err := o.Update(); err != nil {
+			log.Fatal(err)
+		}
+	}
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	ebitenutil.DebugPrint(screen, "Hello, World!")
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %d\tTPS:%d\nLEFT/RIGHT ARROW TO ROTATE\nUP/DOWN ARROW TO FORWARD/BACKWARD\n", int(ebiten.ActualFPS()), int(ebiten.ActualTPS())))
 
 	for _, o := range g.objects {
 		if err := o.Draw(screen); err != nil {

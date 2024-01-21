@@ -5,6 +5,6 @@ import (
 )
 
 type Object interface {
-	Update(*ebiten.Image)
+	Update() error
 	Draw(*ebiten.Image) error
 }

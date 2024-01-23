@@ -49,6 +49,11 @@ func NewGame() *Game {
 
 	g.objects = []objects.Object{
 		objects.NewPlayer(),
+		objects.NewAsteroid(),
+		objects.NewAsteroid(),
+		objects.NewAsteroid(),
+		objects.NewAsteroid(),
+		objects.NewAsteroid(),
 	}
 
 	return g

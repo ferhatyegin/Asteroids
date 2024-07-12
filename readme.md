@@ -10,4 +10,4 @@ This repository contains a collection of assets sourced from [Kenney.nl](https:/
 These assets were originally sourced from [Kenney.nl](https://kenney.nl/assets), a great resource for free game assets.
 
 ### License
-This repository is licensed under the MIT License. For more information, please refer to the [LICENSE](./LICENSE) file.
+This repository is licensed under the MIT License. For more information, please refer to the [LICENSE](./LICENSE.txt) file.
